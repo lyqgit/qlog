@@ -1,5 +1,5 @@
-import en from './en'
-import zhCn from './zh-cn'
+import en from './en.ts'
+import zhCn from './zh-cn.ts'
 
 export default {
     'en':en,

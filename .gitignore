@@ -1,3 +1,8 @@
 
 node_modules
 package-lock.json
+dist
+examples/qlog.es.js
+examples/qlog.es.js.map
+examples/qlog.umd.js
+examples/qlog.umd.js.map
