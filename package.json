@@ -1,8 +1,9 @@
 {
   "name": "qlog",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "web log",
   "main": "dist/qlog.es.js",
+  "module": "dist/qlog.es.js",
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript",
