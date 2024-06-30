@@ -4,7 +4,11 @@ export function getType(input:any):string{
 }
 
 export function getTypeStr(input:any){
-    return getType(input).replace('[object ','').replace(']','')
+    if(isDom(input)){
+        return 'Dom'
+    }else{
+        return getType(input).replace('[object ','').replace(']','')
+    }
 }
 
 export function isArray(input:any):boolean{
@@ -37,4 +41,8 @@ export function isSymbol(input:any):boolean{
 
 export function isObject(input:any):boolean{
     return getType(input) === '[object Object]'
+}
+
+export function isDom(element) {
+    return element && element.nodeName && element.nodeType === 1;
 }
