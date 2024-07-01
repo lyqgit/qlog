@@ -10,13 +10,14 @@
     
 </body>
 <script>
-    const ll = new qlog({
-        level:'Error',
+    const qlogObj = new qlog({
+        level:qlog.level.VerBose,
         locale:'zh-cn',
         zIndex:99
     })
-    ll.log('测试',123,{zIndex:100,level:'Error'})
-    ll.log('测试33',555)
-    ll.log('测试3555',127773)
+    // qlogObj.filter(3)
+    qlogObj.log('测试',123,{zIndex:100})
+    qlogObj.error('测试33',555)
+    qlogObj.log('测试3555',[{t:1,b:2,c:3},123,[{t:1,b:2,c:3},{t:1,b:2,c:3}]],{zIndex:100,style:'font-size:20px'})
 </script>
 </html>

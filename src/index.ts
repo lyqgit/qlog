@@ -10,13 +10,36 @@ enum Level {
 }
 
 enum LevelStyle {
-    VerBose = 'background-color:#67C23A;padding:10px;border-radius:6px 0 0 6px;color:#ffffff',
-    Info = 'background-color:#909399;padding:10px;border-radius:6px 0 0 6px;color:#ffffff',
-    Warning = 'background-color:#E6A23C;padding:10px;border-radius:6px 0 0 6px;color:#ffffff',
-    Error = 'background-color:#F56C6C;padding:10px;border-radius:6px 0 0 6px;color:#ffffff'
+    VerBose = 'background-color:#67C23A;color:#ffffff',
+    Info = 'background-color:#909399;color:#ffffff',
+    Warning = 'background-color:#E6A23C;color:#ffffff',
+    Error = 'background-color:#F56C6C;color:#ffffff',
 }
 
-const TimeStyle = 'background-color:#409EFF;padding:10px;border-radius:0 6px 6px 0;color:#ffffff'
+enum BorderRadiusStyle {
+    ltb = 'border-radius:6px 0 0 6px',
+    rtb = 'border-radius:0 6px 6px 0',
+}
+
+enum paddingStyle {
+    all10 = 'padding:10px'
+}
+
+function addStyle(first:string,...more:string[]){
+    let res = first
+    if(isArray(more)){
+        for(let i=0;i<more.length;i++){
+            res+=';'
+            res+=more[i]
+        }
+        return res
+
+    }else{
+        return res
+    }
+}
+
+const TimeStyle = 'background-color:#409EFF;padding:10px;color:#ffffff'
 
 type ConifgOption = {
     level?:Level,
@@ -26,16 +49,16 @@ type ConifgOption = {
     VerBoseStyle?:string
     InfoStyle?:string
     WarningStyle?:string
-    ErrorStyle?:string
+    ErrorStyle?:string,
+    format?:string
 }
 
 type LogParam = {
     style?:string,
-    level?:Level,
     zIndex?:number
 }
 
-const space = '  '
+const space3 = '  '
 
 export default function qlog(option?:ConifgOption){
     this.level = option?.level??Level.VerBose
@@ -45,9 +68,16 @@ export default function qlog(option?:ConifgOption){
     this.InfoStyle = option?.InfoStyle??''
     this.WarningStyle = option?.WarningStyle??''
     this.ErrorStyle = option?.ErrorStyle??''
+    this.format = option?.format??undefined
 }
 
+qlog.level = Level
+
 qlog.prototype.console = window.console
+
+qlog.prototype.filter = function(key){
+    this.filterKey = key
+}
 
 qlog.prototype.print = function<T>(message?:T,param?:LogParam){
 
@@ -56,11 +86,14 @@ qlog.prototype.print = function<T>(message?:T,param?:LogParam){
 
     let that = this
 
-    function innerPrint(type:string,messsage:any,styleStr?:string){
-        console.log("%c"+locale[that.locale]['type']+space+type+space+message,styleStr)
+    function innerPrint(type:string,message:any,styleStr?:string){
+        console.log("%c"+locale[that.locale]['type']+space3+type+space3,styleStr)
+        console.log(message)
     }
+    // console.log('rpint-message',message)
     switch(getTypeStr(message)){
         case 'Array':
+            console.log("%c"+locale[that.locale]['type']+space3+'Array'+space3,styleStr)
             console.table(message)
         case 'Boolean':
             innerPrint('Boolean',message,styleStr)
@@ -93,22 +126,43 @@ qlog.prototype.print = function<T>(message?:T,param?:LogParam){
 }
 
 qlog.prototype.beforeLog = function(key:string | number,format:string = 'YYYY-MM-DD HH:mm:ss'){
+
+    let curFormat = this.format??format
+
     console.log(
-        "%c"+key+"%c"+locale[this.locale]['date']+space+dayjs().format(format)+space+locale[this.locale]['start'],
-        LevelStyle[this.level],
-        TimeStyle
+        "%c"+key+"%c"+locale[this.locale]['date']+':'+space3+dayjs().format(curFormat)+'%c'+locale[this.locale]['start'],
+        addStyle(LevelStyle[this.level],BorderRadiusStyle.ltb,paddingStyle.all10),
+        TimeStyle,
+        addStyle(LevelStyle[this.level],BorderRadiusStyle.rtb,paddingStyle.all10),
     )
 }
 
 qlog.prototype.afterLog = function(key:string | number){
     console.log(
-        "%c"+key+"%c"+locale[this.locale]['timestamp']+space+dayjs().unix()+space+locale[this.locale]['end'],
-        LevelStyle[this.level],
-        TimeStyle
+        "%c"+key+"%c"+locale[this.locale]['timestamp']+':'+space3+dayjs().unix()+'%c'+locale[this.locale]['end'],
+        addStyle(LevelStyle[this.level],BorderRadiusStyle.ltb,paddingStyle.all10),
+        TimeStyle,
+        addStyle(LevelStyle[this.level],BorderRadiusStyle.rtb,paddingStyle.all10),
     )
 }
 
 qlog.prototype.log = function(key?:string | number,message?:any[] | any,param?:LogParam){
+    this.baseLog(key,message,Level.VerBose,param)
+}
+
+qlog.prototype.info = function(key?:string | number,message?:any[] | any,param?:LogParam){
+    this.baseLog(key,message,Level.Info,param)
+}
+
+qlog.prototype.warn = function(key?:string | number,message?:any[] | any,param?:LogParam){
+    this.baseLog(key,message,Level.Warning,param)
+}
+
+qlog.prototype.error = function(key?:string | number,message?:any[] | any,param?:LogParam){
+    this.baseLog(key,message,Level.Error,param)
+}
+
+qlog.prototype.baseLog = function(key?:string | number,message?:any[] | any,level?:Level,param?:LogParam){
     try{
 
         let zIndex = 1
@@ -122,15 +176,25 @@ qlog.prototype.log = function(key?:string | number,message?:any[] | any,param?:L
             return
         }
 
-        let level = param?.level??Level.VerBose
+        let curLevel = level??Level.VerBose
 
-        if(this.level != level){
+        if(this.level != curLevel){
             return
+        }
+
+        if(this.filterKey){
+            if(!!key){
+                if(!(key.toString().includes(this.filterKey))){
+                    return
+                }
+            }else{
+                return
+            }
         }
 
         this.beforeLog(key)
         if(isArray(message)){
-            for(let i=9;i<message.length;i++){
+            for(let i=0;i<message.length;i++){
                 const arg = message[i]
                 this.print(arg,param)
             }
