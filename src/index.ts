@@ -95,6 +95,7 @@ qlog.prototype.print = function<T>(message?:T,param?:LogParam){
         case 'Array':
             console.log("%c"+locale[that.locale]['type']+space3+'Array'+space3,styleStr)
             console.table(message)
+            break;
         case 'Boolean':
             innerPrint('Boolean',message,styleStr)
             break;
