@@ -42,10 +42,11 @@ function addStyle(first:string,...more:string[]){
 const TimeStyle = 'background-color:#409EFF;padding:10px;color:#ffffff'
 
 type ConifgOption = {
+    build?:boolean
     level?:Level,
     plugins?:Array<Function> | []
     locale?:string,
-    zIndex?:Number,
+    zIndex?:number,
     VerBoseStyle?:string
     InfoStyle?:string
     WarningStyle?:string
@@ -61,13 +62,14 @@ type LogParam = {
 const space3 = '  '
 
 export default function qlog(option?:ConifgOption){
+    this.build = option?.build??false
     this.level = option?.level??Level.VerBose
     this.locale = option?.locale??'en'
-    this.zIndex = option?.zIndex??0
-    this.VerBoseStyle = option?.VerBoseStyle??''
-    this.InfoStyle = option?.InfoStyle??''
-    this.WarningStyle = option?.WarningStyle??''
-    this.ErrorStyle = option?.ErrorStyle??''
+    this.zIndex = option?.zIndex??1
+    this.VerBoseStyle = option?.VerBoseStyle??undefined
+    this.InfoStyle = option?.InfoStyle??undefined
+    this.WarningStyle = option?.WarningStyle??undefined
+    this.ErrorStyle = option?.ErrorStyle??undefined
     this.format = option?.format??undefined
 }
 
@@ -82,7 +84,6 @@ qlog.prototype.filter = function(key){
 qlog.prototype.print = function<T>(message?:T,param?:LogParam){
 
     let styleStr = param?.style??''
-    
 
     let that = this
 
@@ -164,6 +165,9 @@ qlog.prototype.error = function(key?:string | number,message?:any[] | any,param?
 }
 
 qlog.prototype.baseLog = function(key?:string | number,message?:any[] | any,level?:Level,param?:LogParam){
+    if(this.build){
+        return
+    }
     try{
 
         let zIndex = 1
