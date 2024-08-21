@@ -1,8 +1,8 @@
 <h1 align="center" style="font-weight: bold;">qlog</h1> 
 
 <p align="center">
-    <a href="https://github.com/lyqgit/qlog/tree/main/README.md">English</a>&nbsp;&nbsp;
-    <a href="https://github.com/lyqgit/qlog/tree/main/README.zh-hans.md">简体中文</a>&nbsp;&nbsp;
+    <a href="https://github.com/lyqgit/qlog/blob/main/README.md">English</a>&nbsp;&nbsp;
+    <a href="https://github.com/lyqgit/qlog/blob/main/README.zh-hans.md">简体中文</a>&nbsp;&nbsp;
 </p>
 
 ## 简介
