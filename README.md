@@ -1,4 +1,4 @@
-<p style="font-weight: bold;font-size:60px;text-align:center">qlog</p> 
+<h1 align="center" style="font-weight: bold;">qlog</h1> 
 
 <p align="center">
     <a href="https://github.com/lyqgit/qlog/tree/main/README.md">English</a>&nbsp;&nbsp;
