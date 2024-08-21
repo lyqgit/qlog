@@ -77,7 +77,7 @@ qlog.level = Level
 
 qlog.prototype.console = window.console
 
-qlog.prototype.filter = function(key){
+qlog.prototype.filter = function(key:string | number){
     this.filterKey = key
 }
 
